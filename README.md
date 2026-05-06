@@ -65,56 +65,79 @@
 | | 发起合作邀请 | ✅ |
 | **千帆平台** | 获取分销商列表 & 详细数据 | ✅ |
 | | 获取分销商合作品类 / 店铺 / 商品信息 | ✅ |
+| **AI 智能分析** | 接入 Claude / OpenAI / Ollama | ✅ |
+| | 笔记趋势分析 / 标题套路 / 热门标签 / 内容摘要 | ✅ |
+| | 笔记改写（爆款/文艺/专业/幽默/口语化） | ✅ |
+| | 评论情感分析 & 用户画像 | ✅ |
 
 ---
 
-## 🤖 接入 AI 智能体
+## 🤖 AI 智能体接入
 
-Spider_XHS 天然适合作为 AI 运营 Agent 的数据底座，以下是几种典型用法：
+项目内置 `AI_Client` 统一封装，支持多模型切换。在 `.env` 中配置即可：
 
-### 场景一：竞品笔记采集 + AI 改写 + 自动发布
+```
+# AI 提供商：claude / openai / ollama
+AI_PROVIDER=claude
+AI_API_KEY=sk-xxx
+AI_MODEL=claude-sonnet-4-6-20250514
+AI_BASE_URL=  # OpenAI 兼容接口地址，ollama 填 http://localhost:11434/v1
+```
+
+### 支持的 AI 功能
+
+| 功能 | 说明 |
+|------|------|
+| **趋势分析** | 分析互动数据分布，找出高互动笔记的共同特征 |
+| **标题套路** | 总结爆款标题的写作套路和常用句式 |
+| **热门标签** | 统计高频标签，发现潜在内容方向 |
+| **内容摘要** | 归纳内容主题和受众群体 |
+| **笔记改写** | 5 种风格（爆款/文艺/专业/幽默/口语化）自动生成标题和正文 |
+| **评论分析** | 情感倾向、用户关注点、负面反馈、用户画像 |
+
+### 快速调用示例
 
 ```python
+from xhs_utils.ai_util import AI_Client, analyze_notes, rewrite_note, analyze_comments
 from apis.xhs_pc_apis import XHS_Apis
-from apis.xhs_creator_apis import XHS_Creator_Apis
 
 pc_api = XHS_Apis()
-creator_api = XHS_Creator_Apis()
+ai = AI_Client()
 
-# 1. 采集竞品笔记
-success, msg, note = pc_api.get_note_info(note_url, cookies_str)
+# 1. 采集笔记
+success, msg, notes = pc_api.search_some_note("穿搭", 20, cookies)
 
-# 2. 交给 AI 改写（接入任意大模型）
-rewritten = your_ai_agent(note['content'])   # GPT / Claude / Qwen / 本地模型
+# 2. AI 趋势分析
+result = analyze_notes(ai, notes, analysis_type='trend')
 
-# 3. 自动上传到创作者平台
-creator_api.post_note({
-    "title": rewritten['title'],
-    "desc": rewritten['desc'],
-    "media_type": "image",
-    "images": [...],
-    ...
-}, creator_cookies_str)
+# 3. AI 改写单条笔记
+rewritten = rewrite_note(ai, note_info, style='爆款')
+
+# 4. AI 评论分析
+result = analyze_comments(ai, comments)
 ```
 
-### 场景二：关键词监控 + AI 情报分析
+---
 
-```python
-# 搜索指定关键词的最新笔记，交给 AI 分析趋势
-success, msg, notes = pc_api.search_some_note(query, require_num, cookies_str, ...)
-analysis = your_ai_agent(notes)
+## 🎯 交互式命令行工具
+
+运行 `python main.py` 后进入交互式菜单，支持以下操作：
+
+```
+Spider_XHS - 小红书数据采集 & AI 分析工具
+==================================================
+
+请选择模式：
+  1. 爬取指定笔记列表
+  2. 爬取用户所有笔记
+  3. 搜索关键词爬取笔记
+  4. AI 笔记内容分析（趋势/标题/标签）
+  5. AI 笔记改写（生成爆款文案）
+  6. AI 评论情感分析
 ```
 
-### 场景三：KOL 筛选 + 智能匹配
-
-```python
-from apis.xhs_pugongying_apis import PuGongYingAPI
-
-pgy = PuGongYingAPI()
-# 获取目标类目的 KOL 数据，交给 AI 评估匹配度
-kol_list = pgy.get_some_user(num=50, cookies=cookies)
-best_kols = your_ai_agent(kol_list, brand_profile)
-```
+模式 1-3 支持选择保存方式（全部信息 / 仅媒体 / 仅 Excel / 不保存），
+模式 4-6 直接调用 AI 大模型输出分析结果。
 
 ---
 
@@ -158,10 +181,17 @@ npm install
 
 ### 🎨 配置 Cookie
 
-在项目根目录的 `.env` 文件中填入你的登录 Cookie：
+在项目根目录的 `.env` 文件中填入你的登录 Cookie 和 AI 配置：
 
 ```
+# 小红书 Cookie
 COOKIES='your_cookie_here'
+
+# AI 配置（可选）
+AI_PROVIDER=claude
+AI_API_KEY=sk-xxx
+AI_MODEL=claude-sonnet-4-6-20250514
+AI_BASE_URL=
 ```
 
 Cookie 获取方式：浏览器登录小红书后，按 `F12` 打开开发者工具 → 网络 → Fetch/XHR → 找任意一个请求 → 复制请求头中的 `cookie` 字段。
@@ -206,7 +236,8 @@ Spider_XHS/
 │   ├── xhs_util.py                  # PC端签名算法封装
 │   ├── xhs_creator_util.py          # 创作者平台签名算法封装
 │   ├── xhs_pugongying_util.py       # 蒲公英平台工具
-│   └── xhs_qianfan_util.py          # 千帆平台工具
+│   ├── xhs_qianfan_util.py          # 千帆平台工具
+│   └── ai_util.py                   # AI 工具（Claude/OpenAI/Ollama 接入、笔记分析、改写、评论分析）
 ├── static/
 │   ├── xhs_main_260411.js           # PC端签名核心JS（最新版）
 │   ├── xhs_creator_260411.js        # 创作者平台签名核心JS（最新版）
@@ -221,11 +252,13 @@ Spider_XHS/
 
 ## 🗝️ 注意事项
 
-- `main.py` 是爬虫入口，可根据需求修改调用逻辑
+- `main.py` 是爬虫入口，提供交互式 CLI 菜单，也可直接调用 `apis/` 中的模块
 - `apis/xhs_pc_apis.py` 包含所有 PC 端数据接口
 - `apis/xhs_creator_apis.py` 包含创作者平台发布接口
+- `xhs_utils/ai_util.py` 封装了 AI 分析能力，支持 Claude/OpenAI/Ollama
 - Cookie 有时效性，失效后需重新获取
 - 建议配合代理（proxies 参数）使用，降低封号风险
+- AI 功能需在 `.env` 中配置对应的 API Key
 
 ---
 
@@ -247,6 +280,7 @@ Spider_XHS/
 | 25/06/07 | 更新 search 接口，区分视频和图集下载，新增创作者平台 API |
 | 25/07/15 | 更新 xs version56 & 小红书创作者接口 |
 | 26/04/11 | 重构创作者平台 API（图集 / 视频上传），新增蒲公英 KOL 数据 API，新增千帆分销商 API，签名算法升级至最新版 |
+| 26/05/06 | 新增 AI 智能分析模块（趋势/标题/标签/改写/评论分析），支持 Claude/OpenAI/Ollama 多模型接入，新增交互式 CLI 菜单 |
 
 ---
 
