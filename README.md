@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# Spider_XHS
+#XHS
 
 **专业的小红书数据采集 & 全域运营解决方案 & Agent Skills**
 ## 原项目是https://github.com/cv-cat/Spider_XHS
