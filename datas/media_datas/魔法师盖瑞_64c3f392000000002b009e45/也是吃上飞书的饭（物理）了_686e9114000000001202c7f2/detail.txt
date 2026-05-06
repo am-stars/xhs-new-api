@@ -1,0 +1,27 @@
+笔记id: 686e9114000000001202c7f2
+笔记url: https://www.xiaohongshu.com/explore/686e9114000000001202c7f2?xsec_token=ABjCeU8o3hDQ7hyy6U4RKtys-yC0KBp4GyNdp6mO56IgQ=
+笔记类型: 图集
+用户id: 64c3f392000000002b009e45
+用户主页url: https://www.xiaohongshu.com/user/profile/64c3f392000000002b009e45
+昵称: 魔法师盖瑞
+头像url: https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31hdu5jc2jo5g5p63ue9ap7i5lt5h22g
+标题: 也是吃上飞书的饭（物理）了
+描述: 受邀围观了下飞书今天的发布会！后排听谢老板汇报，顺便吃饭喝霸王茶姬 [doge]
+	
+自己感觉最实用的还是多维表格的更新：加了交付页面更好看的应用模式、沙箱模式（之前开发还得手动复制个表测试，发布还得再配一次字段，可麻烦了[捂脸R]），基于多维表格开发内部应用可以更省事了 [棒R]
+可惜现在还是期货，得过段时间才端上来，等上线了研究下有没有新玩法 [偷笑R]
+	
+（顺带加了下几位产品研发，大家觉得飞书不好用的地方也可以评论区让我代提 [害羞R]
+	
+#世博中心   [poi_v2]#
+#飞书[话题]# #多维表格[话题]# #字节跳动[话题]# #互联网大厂[话题]#
+点赞数量: 172
+收藏数量: 7
+评论数量: 22
+分享数量: 24
+视频封面url: None
+视频地址url: None
+图片地址url列表: ['http://sns-webpic-qc.xhscdn.com/202605061351/90bcb4e174bfe786d03477590182cca9/notes_pre_post/1040g3k031jnl48r234005p63ue9ap7i5nai96g0!nd_dft_wlteh_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/d54834a2ce2e5b4e5117b94e2ab7ab0a/notes_pre_post/1040g3k031jnl4bh1j0s05p63ue9ap7i5fk8kqro!nd_dft_wgth_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/ab8474db9695998a066d6ddb8716625c/notes_pre_post/1040g3k031jnl4b1fio0g5p63ue9ap7i5s8b66so!nd_dft_wgth_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/ee3d7977cc1bc01170be963861b1e077/notes_pre_post/1040g3k031jnktbv42o405p63ue9ap7i5s60a128!nd_dft_wgth_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/27f61ceaf790ff3c8edb1e8b4392bd0d/notes_pre_post/1040g3k031jnl4ajkj2005p63ue9ap7i531mm0fg!nd_dft_wgth_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/cda3d532e6df16b1b6cd75747e17a317/notes_pre_post/1040g3k031jnl4a5bj4005p63ue9ap7i5saeikc0!nd_dft_wlteh_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/784b249a460c37c47e48c6b5740fb449/notes_pre_post/1040g3k031jnl49nk32e05p63ue9ap7i58gvnhn8!nd_dft_wlteh_webp_3', 'http://sns-webpic-qc.xhscdn.com/202605061351/51235e277140255e43420fa45022bb1b/notes_pre_post/1040g3k031jnl499rj0005p63ue9ap7i51kkgjf8!nd_dft_wlteh_webp_3']
+标签: ['世博中心   ', '飞书', '多维表格', '字节跳动', '互联网大厂']
+上传时间: 2025-07-09 23:56:04
+ip归属地: 未知
