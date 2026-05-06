@@ -5,7 +5,7 @@
 # Spider_XHS
 
 **专业的小红书数据采集 & 全域运营解决方案 & Agent Skills**
-**原项目是**https://github.com/cv-cat/Spider_XHS**
+**原项目是**https://github.com/cv-cat/Spider_XHS
 **本项目是在原项目的基础上加了终端选择输入，接入ai，加了ai智能体的skills调用等功能**
 
 [![Skills](https://img.shields.io/badge/skills-supported-success)](https://github.com/cv-cat/XhsSkills)
