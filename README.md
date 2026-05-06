@@ -1,10 +1,4 @@
-<p align="center">
-  <a href="https://github.com/cv-cat/Spider_XHS" target="_blank">
-    <picture>
-     
-    </picture>
-  </a>
-</p>
+
 
 <div align="center">
 
