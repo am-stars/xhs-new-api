@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://github.com/cv-cat/Spider_XHS" target="_blank">
     <picture>
-      <img width="220" src="./author/logo.jpg" alt="Spider_XHS logo">
+     
     </picture>
   </a>
 </p>
@@ -291,10 +291,7 @@ Spider_XHS/
 3. 欢迎 PR 和 Issue，也欢迎关注作者其他项目
 4. 如果此项目对您有帮助，欢迎请作者喝一杯奶茶 ~~（开心一整天 😊）
 
-<div align="center">
-  <img src="./author/wx_pay.png" width="380px" alt="微信赞赏码">
-  <img src="./author/zfb_pay.jpg" width="380px" alt="支付宝收款码">
-</div>
+
 
 ---
 
