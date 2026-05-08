@@ -2,7 +2,7 @@ import json
 import os
 from loguru import logger
 from apis.xhs_pc_apis import XHS_Apis
-from xhs_utils.common_util import init
+from xhs_utils.common_util import init, update_cookies_in_env, is_login_expired, load_env
 from xhs_utils.data_util import handle_note_info, download_note, save_to_xlsx
 from xhs_utils.ai_util import AI_Client, analyze_notes, rewrite_note, analyze_comments
 
@@ -112,6 +112,43 @@ class Data_Spider():
         logger.info(f'搜索关键词 {query} 笔记: {success}, msg: {msg}')
         return note_list, success, msg
 
+
+def check_cookie_expired_and_retry(operation_name: str, success: bool, msg: str, data_spider, cookies_str: str, proxies=None) -> tuple:
+    """
+    检查 Cookie 是否过期，如果是则询问用户新的 Cookie 并更新
+    :param operation_name: 操作名称
+    :param success: 是否成功
+    :param msg: 错误消息
+    :param data_spider: Data_Spider 实例
+    :param cookies_str: 当前 Cookie
+    :param proxies: 代理
+    :return: (新的成功状态, 新的消息, 新的 Cookie)
+    """
+    if success:
+        return success, msg, cookies_str
+
+    if not is_login_expired(str(msg)):
+        return success, msg, cookies_str
+
+    print(f"\n{'=' * 50}")
+    print(f"  ⚠ 检测到【{operation_name}】Cookie 可能已过期")
+    print(f"  错误信息: {msg}")
+    print(f"{'=' * 50}")
+    print()
+    new_cookie = input("请输入新的 Cookie（或输入空行跳过）: ").strip()
+    if not new_cookie:
+        print("跳过，请重新运行。")
+        return False, "Cookie 已过期", cookies_str
+
+    # 更新并保存到 .env
+    updated = update_cookies_in_env(new_cookie)
+    if updated:
+        print("Cookie 已更新并保存，正在重试...")
+        return True, "Cookie 已更新，请重试", new_cookie
+    else:
+        print("Cookie 更新失败。")
+        return False, "Cookie 更新失败", cookies_str
+
 if __name__ == '__main__':
     """
         此文件为爬虫的入口文件，可以直接运行
@@ -123,6 +160,9 @@ if __name__ == '__main__':
     cookies_str, base_path = init()
     data_spider = Data_Spider()
     ai_client = AI_Client()
+
+    # 用一个可变容器持有 cookie，使得 check 函数可以更新它
+    cookie_holder = {'cookies': cookies_str}
 
     def run_once():
         print("=" * 50)
@@ -175,7 +215,31 @@ if __name__ == '__main__':
                 return
             if not excel_name:
                 excel_name = 'notes'
-            data_spider.spider_some_note(notes, cookies_str, base_path, save_choice, excel_name, proxies)
+
+            print(f"开始爬取 {len(notes)} 条笔记...")
+            success = True
+            msg = 'success'
+            for note_url in notes:
+                s, m, info = data_spider.spider_note(note_url, cookie_holder['cookies'], proxies)
+                if not s:
+                    success = False
+                    msg = m
+                    break
+
+            if not success and is_login_expired(str(msg)):
+                success, msg, new_cookie = check_cookie_expired_and_retry(
+                    '爬取笔记', False, msg, data_spider, cookie_holder['cookies'], proxies)
+                if success:
+                    cookie_holder['cookies'] = new_cookie
+                    cookie_holder['cookies'] = load_env() or cookie_holder['cookies']
+                    data_spider.spider_some_note(notes, cookie_holder['cookies'], base_path, save_choice, excel_name, proxies)
+                    return
+                else:
+                    print(f"操作失败: {msg}")
+                    return
+
+            if success:
+                data_spider.spider_some_note(notes, cookie_holder['cookies'], base_path, save_choice, excel_name, proxies)
 
         elif mode == '2':
             # 爬取用户所有笔记
@@ -196,7 +260,18 @@ if __name__ == '__main__':
             else:
                 print("将爬取该用户全部笔记")
 
-            data_spider.spider_user_all_note(user_url, cookies_str, base_path, save_choice, excel_name or 'user_notes', max_notes, proxies)
+            note_list, success, msg = data_spider.spider_user_all_note(user_url, cookie_holder['cookies'], base_path, save_choice, excel_name or 'user_notes', max_notes, proxies)
+
+            if not success and is_login_expired(str(msg)):
+                success, msg, new_cookie = check_cookie_expired_and_retry(
+                    '爬取用户笔记', False, msg, data_spider, cookie_holder['cookies'], proxies)
+                if success:
+                    cookie_holder['cookies'] = load_env() or cookie_holder['cookies']
+                    data_spider.spider_user_all_note(user_url, cookie_holder['cookies'], base_path, save_choice, excel_name or 'user_notes', max_notes, proxies)
+                    return
+                else:
+                    print(f"操作失败: {msg}")
+                    return
 
         elif mode == '3':
             # 搜索关键词爬取
@@ -236,7 +311,18 @@ if __name__ == '__main__':
                 lon_str = input("请输入经度 (如 116.4207): ").strip()
                 geo = {"latitude": float(lat_str), "longitude": float(lon_str)}
 
-            data_spider.spider_some_search_note(query, require_num, cookies_str, base_path, save_choice, sort_type, note_type, note_time, note_range, pos_distance, geo, excel_name or query, proxies)
+            note_list, success, msg = data_spider.spider_some_search_note(query, require_num, cookie_holder['cookies'], base_path, save_choice, sort_type, note_type, note_time, note_range, pos_distance, geo, excel_name or query, proxies)
+
+            if not success and is_login_expired(str(msg)):
+                success, msg, new_cookie = check_cookie_expired_and_retry(
+                    '搜索笔记', False, msg, data_spider, cookie_holder['cookies'], proxies)
+                if success:
+                    cookie_holder['cookies'] = load_env() or cookie_holder['cookies']
+                    data_spider.spider_some_search_note(query, require_num, cookie_holder['cookies'], base_path, save_choice, sort_type, note_type, note_time, note_range, pos_distance, geo, excel_name or query, proxies)
+                    return
+                else:
+                    print(f"操作失败: {msg}")
+                    return
 
         elif mode == '4':
             # AI 笔记分析
@@ -266,9 +352,24 @@ if __name__ == '__main__':
             print(f"正在爬取 {len(notes)} 条笔记...")
             note_list = []
             for note_url in notes:
-                success, msg, note_info = data_spider.spider_note(note_url, cookies_str, proxies)
+                success, msg, note_info = data_spider.spider_note(note_url, cookie_holder['cookies'], proxies)
                 if success and note_info:
                     note_list.append(note_info)
+                elif not success and is_login_expired(str(msg)):
+                    success, msg, new_cookie = check_cookie_expired_and_retry(
+                        'AI 笔记分析', False, msg, data_spider, cookie_holder['cookies'], proxies)
+                    if success:
+                        cookie_holder['cookies'] = load_env() or cookie_holder['cookies']
+                        # 重新爬取
+                        note_list = []
+                        for n_url in notes:
+                            s, m, info = data_spider.spider_note(n_url, cookie_holder['cookies'], proxies)
+                            if s and info:
+                                note_list.append(info)
+                    else:
+                        print(f"操作失败: {msg}")
+                        return
+                    break
 
             if not note_list:
                 print("未能成功爬取任何笔记。")
@@ -297,7 +398,17 @@ if __name__ == '__main__':
 
             # 爬取笔记
             print("正在爬取笔记...")
-            success, msg, note_info = data_spider.spider_note(note_url, cookies_str, proxies)
+            success, msg, note_info = data_spider.spider_note(note_url, cookie_holder['cookies'], proxies)
+            if not success and is_login_expired(str(msg)):
+                success, msg, new_cookie = check_cookie_expired_and_retry(
+                    'AI 笔记改写', False, msg, data_spider, cookie_holder['cookies'], proxies)
+                if success:
+                    cookie_holder['cookies'] = load_env() or cookie_holder['cookies']
+                    success, msg, note_info = data_spider.spider_note(note_url, cookie_holder['cookies'], proxies)
+                else:
+                    print(f"操作失败: {msg}")
+                    return
+
             if not success or not note_info:
                 print(f"爬取失败: {msg}")
                 return
@@ -326,7 +437,17 @@ if __name__ == '__main__':
             kv_dist = {kv.split('=')[0]: kv.split('=')[1] for kv in kvs}
             xsec_token = kv_dist.get('xsec_token', '')
 
-            success, msg, comments = data_spider.xhs_apis.get_note_all_out_comment(note_id, xsec_token, cookies_str, proxies)
+            success, msg, comments = data_spider.xhs_apis.get_note_all_out_comment(note_id, xsec_token, cookie_holder['cookies'], proxies)
+            if not success and is_login_expired(str(msg)):
+                success, msg, new_cookie = check_cookie_expired_and_retry(
+                    'AI 评论分析', False, msg, data_spider, cookie_holder['cookies'], proxies)
+                if success:
+                    cookie_holder['cookies'] = load_env() or cookie_holder['cookies']
+                    success, msg, comments = data_spider.xhs_apis.get_note_all_out_comment(note_id, xsec_token, cookie_holder['cookies'], proxies)
+                else:
+                    print(f"操作失败: {msg}")
+                    return
+
             if not success or not comments:
                 print(f"获取评论失败: {msg}")
                 return
@@ -346,11 +467,5 @@ if __name__ == '__main__':
             run_once()
         except (KeyboardInterrupt, EOFError):
             print("\n程序已退出。")
-            break
-
-        print()
-        again = input("是否继续？(y/n): ").strip().lower()
-        if again != 'y':
-            print("程序已退出。")
             break
         print()
