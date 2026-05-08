@@ -32,4 +32,6 @@ venv.bak/
 *.json
 ai_*.txt
 test_ai_output.txt
+datas/
+release_*.json
 
