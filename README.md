@@ -1,11 +1,19 @@
+
+
+<div align="center">
+
 # Spider_XHS
 
 **专业的小红书数据采集 & 全域运营解决方案 & Agent Skills**
+## 原项目是https://github.com/cv-cat/Spider_XHS
+## 本项目是在原项目的基础上加了终端选择输入，接入ai，加了ai智能体的skills调用等功能
 
 [![Skills](https://img.shields.io/badge/skills-supported-success)](https://github.com/cv-cat/XhsSkills)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![Node.js](https://img.shields.io/badge/nodejs-20%2B-green)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-orange)](LICENSE)
+
+</div>
 
 > **在 AI 大模型爆发的时代，内容运营的竞争本质是效率竞争。**
 > 本项目封装了小红书平台完整的数据采集与内容发布能力，为开发者构建 AI 运营智能体提供可靠、稳定的底层 API 支撑。
@@ -137,9 +145,21 @@ Spider_XHS - 小红书数据采集 & AI 分析工具
 
 ---
 
-## 🎨 爬虫效果
+## 🎨 爬虫效果图
 
-> 浏览器登录小红书后，F12 → 网络 → Fetch/XHR → 复制请求头中的 `cookie` 字段。
+### 处理后的所有用户
+![image](https://github.com/cv-cat/Spider_XHS/assets/94289429/00902dbd-4da1-45bc-90bb-19f5856a04ad)
+
+### 某个用户所有的笔记
+![image](https://github.com/cv-cat/Spider_XHS/assets/94289429/880884e8-4a1d-4dc1-a4dc-e168dd0e9896)
+
+### 某个笔记具体的内容
+![image](https://github.com/cv-cat/Spider_XHS/assets/94289429/d17f3f4e-cd44-4d3a-b9f6-d880da626cc8)
+
+### 保存的 Excel
+![image](https://github.com/user-attachments/assets/707f20ed-be27-4482-89b3-a5863bc360e7)
+
+---
 
 ## 🛠️ 快速开始
 
@@ -171,6 +191,10 @@ AI_BASE_URL=
 ```
 
 Cookie 获取方式：浏览器登录小红书后，按 `F12` 打开开发者工具 → 网络 → Fetch/XHR → 找任意一个请求 → 复制请求头中的 `cookie` 字段。
+
+![image](https://github.com/user-attachments/assets/6a7e4ecb-0432-4581-890a-577e0eae463d)
+
+![image](https://github.com/user-attachments/assets/5e62bc35-d758-463e-817c-7dcaacbee13c)
 
 > **注意：必须是登录后的 Cookie，未登录状态无效。**
 
@@ -263,29 +287,7 @@ Spider_XHS/
 3. 欢迎 PR 和 Issue，也欢迎关注作者其他项目
 4. 如果此项目对您有帮助，欢迎请作者喝一杯奶茶 ~~（开心一整天 😊）
 
-<div align="center">
-  <img src="./author/wx_pay.png" width="380px" alt="微信赞赏码">
-  <img src="./author/zfb_pay.jpg" width="380px" alt="支付宝收款码">
-</div>
+
 
 ---
 
-## 📈 Star 趋势
-
-<a href="https://www.star-history.com/#cv-cat/Spider_XHS&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cv-cat/Spider_XHS&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cv-cat/Spider_XHS&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cv-cat/Spider_XHS&type=Date" />
-  </picture>
-</a>
-
----
-
-## 🍔 交流群
-
-如果你对爬虫和 AI Agent 感兴趣，请加作者主页 wx 通过邀请加入群聊
-
-ps: 请加群6，人满或者过期 issue | wx 提醒
-
-![group5](https://github.com/cv-cat/Spider_XHS/blob/master/author/group6.jpg)
